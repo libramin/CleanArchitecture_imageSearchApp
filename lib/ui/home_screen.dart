@@ -12,7 +12,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _searchController = TextEditingController();
-  List<Photo> _photos = [];
 
   @override
   void dispose() {
@@ -41,26 +40,32 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: InputDecoration(
                   suffixIcon: IconButton(
                       onPressed: () async {
-                        final photos = await photoProvider.api.fetch(_searchController.text);
-                        setState(() {
-                          _photos = photos;
-                        });
+                        await photoProvider.fetch(_searchController.text);
                       },
                       icon: const Icon(Icons.search)),
                   border: const OutlineInputBorder(borderSide: BorderSide())),
             ),
-            Expanded(
-              child: GridView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10),
-                  itemCount: _photos.length,
-                  itemBuilder: (context, index) {
-                    final photo = _photos[index];
-                    return ImageWidget(photo: photo);
-                  }),
+            StreamBuilder<List<Photo>>(
+              stream: photoProvider.photoStream,
+              builder: (context, snapshot) {
+                if(!snapshot.hasData){
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final photos = snapshot.data!;
+                return Expanded(
+                  child: GridView.builder(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10),
+                      itemCount: photos.length,
+                      itemBuilder: (context, index) {
+                        final photo = photos[index];
+                        return ImageWidget(photo: photo);
+                      }),
+                );
+              }
             )
           ],
         ),
