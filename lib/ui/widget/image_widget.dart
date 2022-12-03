@@ -15,7 +15,7 @@ class ImageWidget extends StatelessWidget {
               fit: BoxFit.cover,
               filterQuality: FilterQuality.high,
               image:
-              NetworkImage(photo.previewUrl))),
+              NetworkImage(photo.previewURL))),
     );
   }
 }
