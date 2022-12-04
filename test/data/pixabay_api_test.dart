@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:image_search_app/data/pixabay_api.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_search_app/data/data_source/pixabay_api.dart';
+import 'package:image_search_app/data/repository/photo_api_repo_impl.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
@@ -9,16 +10,15 @@ import 'pixabay_api_test.mocks.dart';
 @GenerateMocks([http.Client])
 void main() {
   test('Pixabay 데이터가 잘 가져와지는지 확인', () async {
-    final api = PixabayApi();
-
     final client = MockClient();
+    final api = PhotoApiRepoImpl(PixabayApi(client));
 
     //해당 함수를 동작했을 때 어떤 결과를 줄것인지에 대해 정의
     when(client.get(Uri.parse(
             '${PixabayApi.baseUrl}?key=${PixabayApi.apiKey}&q=apple&image_type=photo')))
         .thenAnswer((_) async => http.Response(fackeJsonBody, 200));
 
-    final result = await api.fetch('apple',client: client);
+    final result = await api.fetch('apple');
 
     expect(result.first.id, 634572);
     expect(result.length, 20);

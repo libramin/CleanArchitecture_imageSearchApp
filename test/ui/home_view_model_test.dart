@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:image_search_app/data/photo_api_repo.dart';
-import 'package:image_search_app/model/photo.dart';
-import 'package:image_search_app/ui/home_view_model.dart';
+import 'package:image_search_app/domain/model/photo.dart';
+import 'package:image_search_app/domain/repository/photo_api_repo.dart';
+import 'package:image_search_app/presentation/home/home_view_model.dart';
 
 void main() {
   test('stream 동작 확인', () async {
