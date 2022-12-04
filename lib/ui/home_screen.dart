@@ -21,8 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final viewModel = Provider.of<HomeViewModel>(context);
-    final viewModel = context.watch<HomeViewModel>();
 
     return Scaffold(
       appBar: AppBar(
@@ -42,23 +40,28 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: InputDecoration(
                   suffixIcon: IconButton(
                       onPressed: () async {
-                        await viewModel.fetch(_searchController.text);
+                        // await viewModel.fetch(_searchController.text);
+                        context.read<HomeViewModel>().fetch(_searchController.text);
                       },
                       icon: const Icon(Icons.search)),
                   border: const OutlineInputBorder(borderSide: BorderSide())),
             ),
-            Expanded(
-              child: GridView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10),
-                  itemCount: viewModel.photos.length,
-                  itemBuilder: (context, index) {
-                    final photo = viewModel.photos[index];
-                    return ImageWidget(photo: photo);
-                  }),
+            Consumer<HomeViewModel>(
+              builder: (_,viewModel,child){
+                return Expanded(
+                  child: GridView.builder(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10),
+                      itemCount: viewModel.photos.length,
+                      itemBuilder: (context, index) {
+                        final photo = viewModel.photos[index];
+                        return ImageWidget(photo: photo);
+                      }),
+                );
+              },
             ),
           ],
         ),
