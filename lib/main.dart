@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: Provider(
+      home: ChangeNotifierProvider(
           create: (_) => HomeViewModel(PixabayApi()),
           child: const HomeScreen()),
     );

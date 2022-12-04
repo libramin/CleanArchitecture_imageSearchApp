@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:image_search_app/model/photo.dart';
 import 'package:image_search_app/ui/home_view_model.dart';
 import 'package:image_search_app/ui/widget/image_widget.dart';
 import 'package:provider/provider.dart';
@@ -48,28 +47,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: const Icon(Icons.search)),
                   border: const OutlineInputBorder(borderSide: BorderSide())),
             ),
-            StreamBuilder<List<Photo>>(
-              stream: viewModel.photoStream,
-              builder: (context, snapshot) {
-                if(!snapshot.hasData){
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final photos = snapshot.data!;
-                return Expanded(
-                  child: GridView.builder(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10),
-                      itemCount: photos.length,
-                      itemBuilder: (context, index) {
-                        final photo = photos[index];
-                        return ImageWidget(photo: photo);
-                      }),
-                );
-              }
-            )
+            Expanded(
+              child: GridView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10),
+                  itemCount: viewModel.photos.length,
+                  itemBuilder: (context, index) {
+                    final photo = viewModel.photos[index];
+                    return ImageWidget(photo: photo);
+                  }),
+            ),
           ],
         ),
       ),

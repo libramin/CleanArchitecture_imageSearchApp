@@ -1,19 +1,28 @@
 import 'dart:async';
+import 'dart:collection';
 
+import 'package:flutter/material.dart';
 import 'package:image_search_app/data/photo_api_repo.dart';
 
 import '../model/photo.dart';
 
-class HomeViewModel {
+class HomeViewModel with ChangeNotifier{
   final PhotoApiRepo repo;
 
-  final _photoStreamController = StreamController<List<Photo>>()..add([]);
-  Stream<List<Photo>> get photoStream => _photoStreamController.stream;
+  List<Photo> _photos = [];
+
+  //외부에서 재정의는 못하나, add/clear 가능
+  // List<Photo> get photos => _photos;
+
+  //수정하지 못하는 리스트뷰 생성 (ex.정의,add,clear불가)
+  UnmodifiableListView<Photo> get photos => UnmodifiableListView(_photos);
 
   HomeViewModel(this.repo);
 
   Future fetch(String query) async {
     final result = await repo.fetch(query);
-    _photoStreamController.add(result);
+    _photos = result;
+    notifyListeners();
   }
+
 }
