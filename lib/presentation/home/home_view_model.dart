@@ -3,6 +3,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:image_search_app/domain/repository/photo_api_repo.dart';
+import 'package:image_search_app/presentation/home/home_state.dart';
 import 'package:image_search_app/presentation/home/home_ui_event.dart';
 
 import '../../data/data_source/result.dart';
@@ -11,11 +12,8 @@ import '../../domain/model/photo.dart';
 class HomeViewModel with ChangeNotifier {
   final PhotoApiRepo repo;
 
-  List<Photo> _photos = [];
-  UnmodifiableListView<Photo> get photos => UnmodifiableListView(_photos);
-
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
+  HomeState _state = HomeState([], false);
+  HomeState get state => _state;
 
   final _eventController = StreamController<HomeUiEvent>();
   Stream<HomeUiEvent> get eventStream => _eventController.stream;
@@ -23,20 +21,21 @@ class HomeViewModel with ChangeNotifier {
   HomeViewModel(this.repo);
 
   Future fetch(String query) async {
-    _isLoading = true;
+    _state = state.copy(isLoading: true);
     notifyListeners();
+
     final Result<List<Photo>> result = await repo.fetch(query);
 
     result.when(
       success: (photos) {
-        _photos = photos;
+        _state = state.copy(photos: photos);
         notifyListeners();
       },
       error: (message) {
         _eventController.add(HomeUiEvent.showSnackBar(message));
       },
     );
-    _isLoading = false;
+    _state = state.copy(isLoading: false);
     notifyListeners();
   }
 }
