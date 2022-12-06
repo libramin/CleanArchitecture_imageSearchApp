@@ -1,7 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_search_app/data/data_source/pixabay_api.dart';
+import 'package:image_search_app/data/data_source/result.dart';
 import 'package:image_search_app/data/repository/photo_api_repo_impl.dart';
+import 'package:image_search_app/domain/model/photo.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
@@ -18,10 +20,9 @@ void main() {
             '${PixabayApi.baseUrl}?key=${PixabayApi.apiKey}&q=apple&image_type=photo')))
         .thenAnswer((_) async => http.Response(fackeJsonBody, 200));
 
-    final result = await api.fetch('apple');
+    final Result<List<Photo>> result = await api.fetch('apple');
 
-    expect(result.first.id, 634572);
-    expect(result.length, 20);
+    expect((result as Success<List<Photo>>).data.first.id, 634572);
 
     //실제로 해당 함수가 동작을 했는지 체크
     verify(client.get(Uri.parse(

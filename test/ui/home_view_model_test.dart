@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image_search_app/data/data_source/result.dart';
 import 'package:image_search_app/domain/model/photo.dart';
 import 'package:image_search_app/domain/repository/photo_api_repo.dart';
 import 'package:image_search_app/presentation/home/home_view_model.dart';
@@ -18,10 +19,10 @@ void main() {
 
 class FakePhotoApiRepo extends PhotoApiRepo {
   @override
-  Future<List<Photo>> fetch(String query) async {
+  Future<Result<List<Photo>>> fetch(String query) async {
     Future.delayed(const Duration(milliseconds: 500));
 
-    return fakeJson.map((e) => Photo.fromJson(e)).toList();
+    return Result.success(fakeJson.map((e) => Photo.fromJson(e)).toList());
   }
 }
 
