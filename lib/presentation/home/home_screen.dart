@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: const Icon(Icons.search)),
                   border: const OutlineInputBorder(borderSide: BorderSide())),
             ),
-            Expanded(
+            viewModel.isLoading ? CircularProgressIndicator() : Expanded(
               child: GridView.builder(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
